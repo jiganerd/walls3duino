@@ -9,6 +9,8 @@
 #include "Raycaster.hpp"
 #include "GeomUtils.hpp"
 
+constexpr double Raycaster::infinity;
+
 Raycaster::Raycaster(uint8_t* pPixelBuf,
                      uint32_t screenWidth,
                      uint32_t screenHeight,
@@ -27,9 +29,6 @@ void Raycaster::RenderScene()
 {
     BeginRender();
     
-    // do this once, as it is actually a pretty costly call
-    static constexpr double infinity {99999999999.9f};
-
     // -1 to 1 as we draw across the screen
     double percentWidth {-1.0f};
     const double percentWidthIncrement {2.0f / screenWidth};
@@ -74,7 +73,7 @@ void Raycaster::RenderScene()
                 }
             }
         }
-        
+
         // draw the closest wall
         if (closestWallPtr)
             RenderColumn(column,

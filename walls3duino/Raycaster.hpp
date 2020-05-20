@@ -31,6 +31,8 @@ private:
     
     const Wall* walls;
     size_t numWalls;
+    
+    static constexpr double infinity {99999999999.9f};
 };
 
 #endif /* Raycaster_hpp */
