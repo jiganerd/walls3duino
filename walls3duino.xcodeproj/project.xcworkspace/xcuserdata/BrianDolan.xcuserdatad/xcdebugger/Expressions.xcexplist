@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "BspTree::FindBestSplitterWallIndex(Vector&lt;Wall&gt; const&amp;):BspTree.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "BspTree::CreateNode(Vector&lt;Wall&gt; const&amp;, Vector&lt;Line&gt; const&amp;):BspTree.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "BspTree::BspNode::BspNode(BspTree*, Wall const&amp;, Vector&lt;Wall&gt; const&amp;, Vector&lt;Line&gt; const&amp;, unsigned int):BspTree.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "main:main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "z.pData[2]">
+            </PersistentString>
+            <PersistentString
+               value = "x.pData[0]">
+            </PersistentString>
+            <PersistentString
+               value = "x.pData[1]">
+            </PersistentString>
+            <PersistentString
+               value = "x.pData[2]">
+            </PersistentString>
+            <PersistentString
+               value = "x.pData[3]">
+            </PersistentString>
+            <PersistentString
+               value = "y.pData[2]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "BspRenderer::ProcessWalls(Wall const*, unsigned long):BspRenderer.cpp">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

@@ -7,7 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AF370B1E24743DC3009D9B05 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF370B1D24743DC3009D9B05 /* main.cpp */; };
+		AF370B3F24743E3B009D9B05 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF370B2624743E3B009D9B05 /* Camera.cpp */; };
+		AF370B4024743E3B009D9B05 /* Raycaster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF370B2824743E3B009D9B05 /* Raycaster.cpp */; };
+		AF370B4624743E3B009D9B05 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF370B3A24743E3B009D9B05 /* Game.cpp */; };
+		AF370B4724743E3B009D9B05 /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF370B3C24743E3B009D9B05 /* Renderer.cpp */; };
+		AF370B4924743E3B009D9B05 /* GeomUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF370B3E24743E3B009D9B05 /* GeomUtils.cpp */; };
+		AF370B4B24743ED1009D9B05 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF370B4A24743ED1009D9B05 /* SDL2.framework */; };
+		AF370B54247443DE009D9B05 /* FrameRateMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF370B50247443DE009D9B05 /* FrameRateMgr.cpp */; };
+		AF370B55247443DE009D9B05 /* Graphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF370B51247443DE009D9B05 /* Graphics.cpp */; };
+		AF370B56247443DE009D9B05 /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF370B52247443DE009D9B05 /* Input.cpp */; };
+		AF370B57247443DE009D9B05 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF370B53247443DE009D9B05 /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +33,27 @@
 
 /* Begin PBXFileReference section */
 		AF370B1A24743DC3009D9B05 /* walls3duino */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = walls3duino; sourceTree = BUILT_PRODUCTS_DIR; };
-		AF370B1D24743DC3009D9B05 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		AF370B2624743E3B009D9B05 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		AF370B2724743E3B009D9B05 /* Camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
+		AF370B2824743E3B009D9B05 /* Raycaster.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Raycaster.cpp; sourceTree = "<group>"; };
+		AF370B2924743E3B009D9B05 /* Raycaster.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Raycaster.hpp; sourceTree = "<group>"; };
+		AF370B2A24743E3B009D9B05 /* Renderer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Renderer.hpp; sourceTree = "<group>"; };
+		AF370B2B24743E3B009D9B05 /* Wall.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Wall.hpp; sourceTree = "<group>"; };
+		AF370B3224743E3B009D9B05 /* Mat2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Mat2.hpp; sourceTree = "<group>"; };
+		AF370B3524743E3B009D9B05 /* Utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Utils.hpp; sourceTree = "<group>"; };
+		AF370B3624743E3B009D9B05 /* Vec2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Vec2.hpp; sourceTree = "<group>"; };
+		AF370B3724743E3B009D9B05 /* Line.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Line.hpp; sourceTree = "<group>"; };
+		AF370B3824743E3B009D9B05 /* Game.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Game.hpp; sourceTree = "<group>"; };
+		AF370B3A24743E3B009D9B05 /* Game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
+		AF370B3B24743E3B009D9B05 /* GeomUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GeomUtils.hpp; sourceTree = "<group>"; };
+		AF370B3C24743E3B009D9B05 /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Renderer.cpp; sourceTree = "<group>"; };
+		AF370B3E24743E3B009D9B05 /* GeomUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeomUtils.cpp; sourceTree = "<group>"; };
+		AF370B4A24743ED1009D9B05 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		AF370B4E2474433C009D9B05 /* SDLSim */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SDLSim; sourceTree = "<group>"; };
+		AF370B50247443DE009D9B05 /* FrameRateMgr.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FrameRateMgr.cpp; path = walls3duino/SDLSim/FrameRateMgr.cpp; sourceTree = "<group>"; };
+		AF370B51247443DE009D9B05 /* Graphics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Graphics.cpp; path = walls3duino/SDLSim/Graphics.cpp; sourceTree = "<group>"; };
+		AF370B52247443DE009D9B05 /* Input.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Input.cpp; path = walls3duino/SDLSim/Input.cpp; sourceTree = "<group>"; };
+		AF370B53247443DE009D9B05 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = walls3duino/SDLSim/main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF370B4B24743ED1009D9B05 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,6 +71,11 @@
 		AF370B1124743DC3009D9B05 = {
 			isa = PBXGroup;
 			children = (
+				AF370B50247443DE009D9B05 /* FrameRateMgr.cpp */,
+				AF370B51247443DE009D9B05 /* Graphics.cpp */,
+				AF370B52247443DE009D9B05 /* Input.cpp */,
+				AF370B53247443DE009D9B05 /* main.cpp */,
+				AF370B4A24743ED1009D9B05 /* SDL2.framework */,
 				AF370B1C24743DC3009D9B05 /* walls3duino */,
 				AF370B1B24743DC3009D9B05 /* Products */,
 			);
@@ -57,7 +92,22 @@
 		AF370B1C24743DC3009D9B05 /* walls3duino */ = {
 			isa = PBXGroup;
 			children = (
-				AF370B1D24743DC3009D9B05 /* main.cpp */,
+				AF370B4E2474433C009D9B05 /* SDLSim */,
+				AF370B2624743E3B009D9B05 /* Camera.cpp */,
+				AF370B2724743E3B009D9B05 /* Camera.hpp */,
+				AF370B2824743E3B009D9B05 /* Raycaster.cpp */,
+				AF370B2924743E3B009D9B05 /* Raycaster.hpp */,
+				AF370B2B24743E3B009D9B05 /* Wall.hpp */,
+				AF370B3224743E3B009D9B05 /* Mat2.hpp */,
+				AF370B3524743E3B009D9B05 /* Utils.hpp */,
+				AF370B3624743E3B009D9B05 /* Vec2.hpp */,
+				AF370B3724743E3B009D9B05 /* Line.hpp */,
+				AF370B3824743E3B009D9B05 /* Game.hpp */,
+				AF370B3A24743E3B009D9B05 /* Game.cpp */,
+				AF370B3B24743E3B009D9B05 /* GeomUtils.hpp */,
+				AF370B2A24743E3B009D9B05 /* Renderer.hpp */,
+				AF370B3C24743E3B009D9B05 /* Renderer.cpp */,
+				AF370B3E24743E3B009D9B05 /* GeomUtils.cpp */,
 			);
 			path = walls3duino;
 			sourceTree = "<group>";
@@ -118,7 +168,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AF370B1E24743DC3009D9B05 /* main.cpp in Sources */,
+				AF370B54247443DE009D9B05 /* FrameRateMgr.cpp in Sources */,
+				AF370B55247443DE009D9B05 /* Graphics.cpp in Sources */,
+				AF370B56247443DE009D9B05 /* Input.cpp in Sources */,
+				AF370B57247443DE009D9B05 /* main.cpp in Sources */,
+				AF370B4624743E3B009D9B05 /* Game.cpp in Sources */,
+				AF370B3F24743E3B009D9B05 /* Camera.cpp in Sources */,
+				AF370B4924743E3B009D9B05 /* GeomUtils.cpp in Sources */,
+				AF370B4724743E3B009D9B05 /* Renderer.cpp in Sources */,
+				AF370B4024743E3B009D9B05 /* Raycaster.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,6 +265,10 @@
 		AF370B2224743DC3009D9B05 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -214,6 +276,10 @@
 		AF370B2324743DC3009D9B05 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -237,6 +303,7 @@
 				AF370B2324743DC3009D9B05 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
