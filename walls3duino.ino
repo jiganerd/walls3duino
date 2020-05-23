@@ -4,9 +4,6 @@
 #include "Game.hpp"
 
 // TODO:
-// fix bug with wall drawing when "in" a wall
-// double vs. uint8_t column heights
-// get BSP binary into flash instead of RAM, using PROGMEM and read functions
 // try bigger map and possibly use loop with stack instead of recursion when decoding if necessary
 // stop BSP drawing when all columns have been filled?
 

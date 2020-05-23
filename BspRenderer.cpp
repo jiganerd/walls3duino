@@ -38,7 +38,7 @@ void BspRenderer::RenderScene()
     memset(pHeightBuffer, 0, screenWidth * sizeof(uint8_t));
     bspTree.TraverseRender(camera.location, RenderWallStatic, this);
     for (uint32_t x = 0; x < screenWidth; x++)
-      RenderColumn(x, static_cast<double>(pHeightBuffer[x]));// TODO: resolve double vs. uint8_t
+      RenderColumn(x, pHeightBuffer[x]);
     EndRender();
     
     // technically this is not "rendering", but... sue me
@@ -81,7 +81,7 @@ void BspRenderer::RenderWall(const Wall &wall, const BspTree::BspNodeDebugInfo& 
             for (uint32_t screenX = screenXP1; screenX <= screenXP2; screenX++)
             {
                 if (pHeightBuffer[screenX] == 0)
-                    pHeightBuffer[screenX] = static_cast<uint8_t>(columnHeight); // TODO: resolve double vs. uint8_t
+                    pHeightBuffer[screenX] = GetClippedHeight(columnHeight);
 
                 columnHeight += columnHeightIncrement;
             }

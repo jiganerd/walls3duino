@@ -76,11 +76,11 @@ void Raycaster::RenderScene()
         // draw the closest wall
         if (closestWallPtr)
             RenderColumn(column,
-                         GetColumnHeightByDistance(closestWallDistance));
+                         GetClippedHeight(GetColumnHeightByDistance(closestWallDistance)));
         // (this allows us to not have to spend time clearing the screen on every frame,
         // and have dithering be consistent from frame to frame)
         else
-            RenderColumn(column, 0.0f);
+            RenderColumn(column, 0);
         
         percentWidth += percentWidthIncrement;
     }

@@ -39,13 +39,12 @@ double Renderer::GetColumnHeightByDistance(double dist)
     return (30.0f / dist * static_cast<double>(screenHeight));
 }
 
-void Renderer::RenderColumn(uint32_t screenX, double height)
+void Renderer::RenderColumn(uint32_t screenX, uint8_t height)
 {
-    double clippedHeight {(height <= screenHeight ? height : screenHeight)};
-    double y1Float {static_cast<double>(screenHeight/2) - (clippedHeight / 2.0f)};
+    double y1Float {static_cast<double>(screenHeight / 2) - (height / 2)};
     
     uint32_t y1 {static_cast<uint32_t>(Rast(y1Float))};
-    uint32_t y2 {static_cast<uint32_t>(Rast(y1Float + clippedHeight))};
+    uint32_t y2 {static_cast<uint32_t>(Rast(y1Float + height))};
     
     // figure out where in the pixel buffer to start, and only do
     // additions from there (avoid multiplication in the drawing loop)
@@ -53,7 +52,7 @@ void Renderer::RenderColumn(uint32_t screenX, double height)
     
     // draw a vertical line all the way through the column
     
-    uint8_t ditherPatternIndex = (8 * clippedHeight / screenHeight);
+    uint8_t ditherPatternIndex = (8 * height / screenHeight);
     if (ditherPatternIndex > 7) ditherPatternIndex = 7;
     static uint8_t ditherPatternOffset = 0;
     uint16_t ditherPattern8 = ditherPattern8bit[ditherPatternIndex];
@@ -95,4 +94,9 @@ uint32_t Renderer::MapPercentageToRange(double percentage, uint32_t rangeHigh)
     uint32_t retVal {static_cast<uint32_t>(percentage * static_cast<double>(rangeHigh + 1))};
     if (retVal > rangeHigh) retVal = rangeHigh;
     return retVal;
+}
+
+uint8_t Renderer::GetClippedHeight(double height)
+{
+    return static_cast<uint8_t>(Rast(height < screenHeight ? height : screenHeight));
 }

@@ -34,12 +34,13 @@ protected:
     void BeginRender();
     void EndRender();
     double GetColumnHeightByDistance(double dist);
-    void RenderColumn(uint32_t screenX, double height);
+    void RenderColumn(uint32_t screenX, uint8_t height);
     uint32_t MapPercentageToRange(double percentage, uint32_t rangeHigh);
     // this follows triangle rasterization rules described at
     // https://docs.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-rasterizer-stage-rules
     //inline static int32_t Rast(double n) { return static_cast<int32_t>(ceil(n - 0.5f)); };
     inline static int32_t Rast(double n) { return static_cast<int32_t>(n); };
+    uint8_t GetClippedHeight(double height);
     
     uint8_t* pPixelBuf;
     const Camera& camera;
