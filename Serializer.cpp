@@ -6,6 +6,9 @@
 //  Copyright © 2020 Brian Dolan. All rights reserved.
 //
 
+#ifndef SDLSim // should be set as a compiler flag on simulation builds
+#include <avr/pgmspace.h>
+#endif
 #include "Serializer.hpp"
 
 Serializer::Fixed::Fixed(double number):
@@ -47,11 +50,19 @@ int32_t Serializer::PeekInt(const uint8_t* bytes, size_t offset)
     return FromBytes(bytes + offset);
 }
 
-uint32_t Serializer::FromBytes(const uint8_t bytes[])
+uint32_t Serializer::FromBytes(const uint8_t* bytes)
 {
+#ifdef SDLSim
+    const uint8_t* ramBytes = bytes;
+#else
+    uint8_t ramBytes[4];
+    for (uint32_t i = 0; i < 4; i++)    
+        ramBytes[i] = pgm_read_byte_near(bytes + i);
+#endif
+    
     return
-        (static_cast<uint32_t>(bytes[3]) << 0)  |
-        (static_cast<uint32_t>(bytes[2]) << 8)  |
-        (static_cast<uint32_t>(bytes[1]) << 16) |
-        (static_cast<uint32_t>(bytes[0]) << 24);
+        (static_cast<uint32_t>(ramBytes[3]) << 0)  |
+        (static_cast<uint32_t>(ramBytes[2]) << 8)  |
+        (static_cast<uint32_t>(ramBytes[1]) << 16) |
+        (static_cast<uint32_t>(ramBytes[0]) << 24);
 }

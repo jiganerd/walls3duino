@@ -56,7 +56,7 @@ public:
     static int32_t PeekInt(const uint8_t* bytes, size_t offset);
     
 private:
-    static uint32_t FromBytes(const uint8_t bytes[]);
+    static uint32_t FromBytes(const uint8_t* bytes);
 };
 
 #endif /* Serializer_hpp */

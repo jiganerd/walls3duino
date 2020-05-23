@@ -9,6 +9,12 @@
 #ifndef BspTreeBin_hpp
 #define BspTreeBin_hpp
 
-extern const unsigned char /*PROGMEM*/ bspTreeBin[];
+#ifdef SDLSim // should be set as a compiler flag on simulation builds
+#define PROGMEM
+#else
+#include <avr/pgmspace.h>
+#endif
+
+extern const unsigned char bspTreeBin[] PROGMEM;
 
 #endif /* BspTreeBin_hpp */
