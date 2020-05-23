@@ -23,7 +23,9 @@ std::string Graphics::SDLException::GetMsg() const
 
 Graphics::Graphics() :
     pPixelBuf{new uint8_t[ScreenWidth * ScreenHeight / 8]},
-    pSimScreenPixelBuf{new uint32_t[SimScreenWidth * SimScreenHeight]}
+    pColumnBuf{new uint8_t[ScreenHeight / 8]},
+    pSimScreenPixelBuf{new uint32_t[SimScreenWidth * SimScreenHeight]},
+    currColumn{0}
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
         throw SDLException("Error initializating SDL");
@@ -47,34 +49,58 @@ Graphics::~Graphics()
     SDL_Quit();
 }
 
-void Graphics::BeginFrame()
-{
-    memset(pPixelBuf.get(), 0, ScreenWidth * ScreenHeight / 8);
-}
-
 void Graphics::EndFrame()
 {
     // adapt vertical 1-bit buffer to SDL buffer
-    for (uint32_t j = 0; j < ScreenHeightChunks; j++)
-    {
+    for (uint32_t pageNum = 0; pageNum < ScreenHeightPages; pageNum++)
         for (uint32_t x = 0; x < ScreenWidth; x++)
+            WritePageToSimScreenPixelBuf(pPixelBuf[pageNum * ScreenWidth + x], x, pageNum);
+    
+    FlushSimScreenPixelBuf();
+}
+
+void Graphics::EndColumn()
+{
+    for (uint32_t pageNum = 0; pageNum < ScreenHeightPages; pageNum++)
+        WritePageToSimScreenPixelBuf(pColumnBuf[pageNum], currColumn, pageNum);
+    
+    if (++currColumn == ScreenWidth)
+        currColumn = 0;
+    
+    // simulate "a little bit" the fact that the hardware shows rendering column to column
+    // as the screen is drawn
+    // we don't do this for every column because this is actually quite a slow operation
+    if (currColumn % 4 == 0)
+        FlushSimScreenPixelBuf();
+}
+
+uint8_t* Graphics::GetScreenBuffer()
+{
+    return pPixelBuf.get();
+}
+
+uint8_t* Graphics::GetColumnBuffer()
+{
+    return pColumnBuf.get();
+}
+
+void Graphics::WritePageToSimScreenPixelBuf(uint8_t pageData, uint32_t x, uint32_t pageNum)
+{
+    for (uint8_t bit = 0; bit < 8; bit++)
+    {
+        uint32_t pixel = (((pageData >> bit) & 0x01) ? 0x00FFFFFF : 0x00000000);
+        uint8_t y = pageNum * 8 + bit;
+        
+        // replicate this pixel according to the screen scaling
+        for (uint32_t scaleY = 0; scaleY < SimScreenScale; scaleY++)
         {
-            uint8_t chunk = pPixelBuf[j * ScreenWidth + x];
-            
-            for (uint8_t bit = 0; bit < 8; bit++)
-            {
-                uint32_t pixel = (((chunk >> bit) & 0x01) ? 0x00FFFFFF : 0x00000000);
-                uint8_t y = j * 8 + bit;
-                
-                // replicate this pixel according to the screen scaling
-                for (uint32_t scaleY = 0; scaleY < SimScreenScale; scaleY++)
-                {
-                    memset(&pSimScreenPixelBuf[(y*SimScreenScale + scaleY) * SimScreenWidth + x*SimScreenScale], pixel, SimScreenScale*sizeof(uint32_t));
-                }
-            }
+            memset(&pSimScreenPixelBuf[(y * SimScreenScale + scaleY) * SimScreenWidth + x * SimScreenScale], pixel, SimScreenScale * sizeof(uint32_t));
         }
     }
-    
+}
+
+void Graphics::FlushSimScreenPixelBuf()
+{
     if (SDL_UpdateTexture(pScreenTexture, NULL, pSimScreenPixelBuf.get(), SimScreenWidth * sizeof(uint32_t)) < 0)
         throw SDLException("Could not update screen texture");
     
@@ -82,9 +108,4 @@ void Graphics::EndFrame()
         throw SDLException("Could not render screen copy");
     
     SDL_RenderPresent(pRenderer);
-}
-
-uint8_t* Graphics::GetScreenBuffer()
-{
-    return pPixelBuf.get();
 }

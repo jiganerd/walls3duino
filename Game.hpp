@@ -13,7 +13,7 @@
 #include "Wall.hpp"
 #include "Line.hpp"
 #include "Camera.hpp"
-//#include "BspRenderer.hpp"
+#include "BspRenderer.hpp"
 #include "Raycaster.hpp"
 
 class Game
@@ -21,7 +21,8 @@ class Game
 public:
     Game(uint8_t* pPixelBuf,
          uint32_t screenWidth,
-         uint32_t screenHeight);
+         uint32_t screenHeight,
+         Renderer::ColRenderedCbType colRenderedCb);
     void ProcessFrame();
     void ToggleRenderers();
     void RotateCamera(double angleRad);
@@ -29,14 +30,6 @@ public:
     void StrafeCamera(double distanceToRight);
     
 private:
-    static constexpr Vec2 worldMax {300, 300};
-    static constexpr Line worldBounds[]
-    {
-        {{      0.0f, 0.0f}, {worldMax.x, 0.0f}},
-        {{worldMax.x, 0.0f},           worldMax},
-        {          worldMax, {0.0f, worldMax.y}},
-        {{0.0f, worldMax.y}, {0.0f,       0.0f}}
-    };
     static constexpr Wall walls[]
     {
         // area bounding box
@@ -54,9 +47,8 @@ private:
     };
 
     Camera camera;
-    //BspRenderer bspr;
-    Raycaster rc;
-    Renderer* pActiveRenderer;
+    BspRenderer bspr;
+    //Raycaster rc;
 };
 
 #endif /* Game_hpp */

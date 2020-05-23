@@ -7,32 +7,25 @@
 //
 
 #include "Game.hpp"
+#include "BspTreeBin.hpp"
 
-constexpr Line Game::worldBounds[];
 constexpr Wall Game::walls[];
 
 Game::Game(uint8_t* pPixelBuf,
            uint32_t screenWidth,
-           uint32_t screenHeight):
+           uint32_t screenHeight,
+           Renderer::ColRenderedCbType colRenderedCb):
     camera({60.0f, 15.0f}),
-    //bspr(pPixelBuf, screenWidth, screenHeight, camera, worldBounds, 4),
-    rc(pPixelBuf, screenWidth, screenHeight, camera, walls, 9, worldBounds, 4),
-    pActiveRenderer{&rc}
+    bspr(pPixelBuf, screenWidth, screenHeight, colRenderedCb, camera)
+    //rc(pPixelBuf, screenWidth, screenHeight, colRenderedCb, camera, walls, 9)
 {
-    //bspr.ProcessWalls(walls, 9);
+    bspr.LoadBin(bspTreeBin);
 }
 
 void Game::ProcessFrame()
 {
-    pActiveRenderer->RenderScene();
-}
-
-void Game::ToggleRenderers()
-{
-//    if (pActiveRenderer == &bspr)
-//        pActiveRenderer = &rc;
-//    else
-//        pActiveRenderer = &bspr;
+    bspr.RenderScene();
+    //rc.RenderScene();
 }
 
 void Game::RotateCamera(double angleRad)

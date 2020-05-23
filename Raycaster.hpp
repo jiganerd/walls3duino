@@ -1,6 +1,6 @@
 //
 //  Raycaster.hpp
-//  walls3d
+//  walls3duino
 //
 //  Created by Brian Dolan on 5/15/20.
 //  Copyright © 2020 Brian Dolan. All rights reserved.
@@ -17,11 +17,10 @@ public:
     Raycaster(uint8_t* pPixelBuf,
               uint32_t screenWidth,
               uint32_t screenHeight,
+              ColRenderedCbType colRenderedCb,
               const Camera& camera,
               const Wall walls[],
-              size_t numWalls,
-              const Line worldBounds[],
-              size_t numWorldBounds);
+              size_t numWalls);
     ~Raycaster() = default;
 
     void RenderScene() override;

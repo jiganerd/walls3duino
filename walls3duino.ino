@@ -1,24 +1,34 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+#include "Adafruit_SSD1306_mod.h"
 #include "Game.hpp"
 
-// max framerate w/ fullscreen black/white memset() flashing test (w/ console output) is just under 12 FPS
+// TODO:
+// fix bug with wall drawing when "in" a wall
+// double vs. uint8_t column heights
+// get BSP binary into flash instead of RAM, using PROGMEM and read functions
+// try bigger map and possibly use loop with stack instead of recursion when decoding if necessary
+// stop BSP drawing when all columns have been filled?
+
+// NOTE: max framerate w/ fullscreen/full pixel buffer black/white memset() flashing test (w/ console output)
+// is just under 12 FPS
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 #define OLED_RESET     4 // Reset pin # (or -1 if sharing Arduino reset pin)
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+Adafruit_SSD1306_mod display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Game* pGame;
 
 // time it took to render the last frame, in milliseconds
 unsigned long frameTimeMs = 1000; // (something reasonable before the first frame is rendered)
 
-//Create variables for each button on the Joystick Shield to assign the pin numbers
-char button0=3, button1=4, button2=5, button3=6;
-char sel=2;
+// pin numbers for buttons on the joystick shield
+char button0 = 3, button1 = 4, button2 = 5, button3 = 6;
+char sel = 2;
+
+void onColRenderered();
 
 void setup()
 {
@@ -29,7 +39,8 @@ void setup()
   // allow time for developer to attach the serial monitor
   //delay(5000);
 
-  Serial.print("free RAM: ");
+  Serial.println("");
+  Serial.print("free RAM before display init: ");
   Serial.println(freeRam());
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -41,19 +52,29 @@ void setup()
 
   Serial.println(F("SSD1306 allocation success"));
 
-  // Show initial display buffer contents on the screen --
-  // the library initializes this with an Adafruit splash screen.
-  display.display();
+  Serial.print("free RAM after display init: ");
+  Serial.println(freeRam());
 
-  pGame = new Game(display.getBuffer(), SCREEN_WIDTH, SCREEN_HEIGHT);
+  pGame = new Game(display.getBuffer(), SCREEN_WIDTH, SCREEN_HEIGHT, onColRenderered);
 }
 
 void loop()
 {
   joypadRead();
+
+  display.startDisplay();
   pGame->ProcessFrame();
-  display.display();
+  display.endDisplay();
+
+  Serial.print("free RAM in loop: ");
+  Serial.println(freeRam());
+
   updateFrameRate();
+}
+
+void onColRenderered()
+{
+  display.displayColumn();
 }
 
 void joypadSetup(void)

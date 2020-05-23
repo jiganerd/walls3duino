@@ -15,10 +15,13 @@
 #include "Input.hpp"
 #include "FrameRateMgr.hpp"
 
+Graphics graphics;
+
+void OnColRendered();
+
 int main(int argc, const char * argv[])
 {
-    Graphics graphics;
-    Game game(graphics.GetScreenBuffer(), graphics.ScreenWidth, graphics.ScreenHeight);
+    Game game(graphics.GetColumnBuffer(), graphics.ScreenWidth, graphics.ScreenHeight, OnColRendered);
     Input input;
     FrameRateMgr frm(true);
     
@@ -29,9 +32,7 @@ int main(int argc, const char * argv[])
         
         if (!quit)
         {
-            graphics.BeginFrame();
             game.ProcessFrame();
-            graphics.EndFrame();
             
             double moveSpeed {frm.GetFrameTimeSecs() * 75.0f};
             double rotSpeed {frm.GetFrameTimeSecs() * M_PI / 2.0f};
@@ -43,12 +44,14 @@ int main(int argc, const char * argv[])
             if (input.GetStrafeLeft())   game.StrafeCamera(-moveSpeed);
             if (input.GetStrafeRight())  game.StrafeCamera(moveSpeed);
             
-            if (input.GetTabFirstPressed())
-                game.ToggleRenderers();
-            
             frm.Mark();
         }
     }
     
     return 0;
+}
+
+void OnColRendered()
+{
+    graphics.EndColumn();
 }

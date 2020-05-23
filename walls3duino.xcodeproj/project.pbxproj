@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		AF370B4B24743ED1009D9B05 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF370B4A24743ED1009D9B05 /* SDL2.framework */; };
+		AF4C06C024798E2A004AF247 /* BspRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF4C06B824798E2A004AF247 /* BspRenderer.cpp */; };
+		AF4C06C124798E2A004AF247 /* BspTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF4C06BA24798E2A004AF247 /* BspTree.cpp */; };
+		AF4C06C224798E2A004AF247 /* BspTreeBin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF4C06BC24798E2A004AF247 /* BspTreeBin.cpp */; };
+		AF4C06C324798E2A004AF247 /* Serializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF4C06BE24798E2A004AF247 /* Serializer.cpp */; };
 		AFE471A0247585CD007E5D22 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AFE47190247585CD007E5D22 /* Camera.cpp */; };
 		AFE471A1247585CD007E5D22 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AFE47192247585CD007E5D22 /* Game.cpp */; };
 		AFE471A2247585CD007E5D22 /* GeomUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AFE47194247585CD007E5D22 /* GeomUtils.cpp */; };
@@ -34,6 +38,14 @@
 /* Begin PBXFileReference section */
 		AF370B1A24743DC3009D9B05 /* walls3duino */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = walls3duino; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF370B4A24743ED1009D9B05 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		AF4C06B824798E2A004AF247 /* BspRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BspRenderer.cpp; sourceTree = "<group>"; };
+		AF4C06B924798E2A004AF247 /* BspRenderer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BspRenderer.hpp; sourceTree = "<group>"; };
+		AF4C06BA24798E2A004AF247 /* BspTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BspTree.cpp; sourceTree = "<group>"; };
+		AF4C06BB24798E2A004AF247 /* BspTree.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BspTree.hpp; sourceTree = "<group>"; };
+		AF4C06BC24798E2A004AF247 /* BspTreeBin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BspTreeBin.cpp; sourceTree = "<group>"; };
+		AF4C06BD24798E2A004AF247 /* BspTreeBin.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BspTreeBin.hpp; sourceTree = "<group>"; };
+		AF4C06BE24798E2A004AF247 /* Serializer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Serializer.cpp; sourceTree = "<group>"; };
+		AF4C06BF24798E2A004AF247 /* Serializer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Serializer.hpp; sourceTree = "<group>"; };
 		AFE47190247585CD007E5D22 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		AFE47191247585CD007E5D22 /* Camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		AFE47192247585CD007E5D22 /* Game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
@@ -71,6 +83,14 @@
 		AF370B1124743DC3009D9B05 = {
 			isa = PBXGroup;
 			children = (
+				AF4C06B824798E2A004AF247 /* BspRenderer.cpp */,
+				AF4C06B924798E2A004AF247 /* BspRenderer.hpp */,
+				AF4C06BA24798E2A004AF247 /* BspTree.cpp */,
+				AF4C06BB24798E2A004AF247 /* BspTree.hpp */,
+				AF4C06BC24798E2A004AF247 /* BspTreeBin.cpp */,
+				AF4C06BD24798E2A004AF247 /* BspTreeBin.hpp */,
+				AF4C06BE24798E2A004AF247 /* Serializer.cpp */,
+				AF4C06BF24798E2A004AF247 /* Serializer.hpp */,
 				AFE471A6247585F6007E5D22 /* FrameRateMgr.cpp */,
 				AFE471A7247585F6007E5D22 /* Graphics.cpp */,
 				AFE471A8247585F6007E5D22 /* Input.cpp */,
@@ -160,14 +180,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF4C06C124798E2A004AF247 /* BspTree.cpp in Sources */,
 				AFE471AA247585F6007E5D22 /* FrameRateMgr.cpp in Sources */,
 				AFE471AB247585F6007E5D22 /* Graphics.cpp in Sources */,
 				AFE471AC247585F6007E5D22 /* Input.cpp in Sources */,
 				AFE471AD247585F6007E5D22 /* main.cpp in Sources */,
+				AF4C06C024798E2A004AF247 /* BspRenderer.cpp in Sources */,
 				AFE471A3247585CD007E5D22 /* Raycaster.cpp in Sources */,
 				AFE471A4247585CD007E5D22 /* Renderer.cpp in Sources */,
 				AFE471A0247585CD007E5D22 /* Camera.cpp in Sources */,
+				AF4C06C224798E2A004AF247 /* BspTreeBin.cpp in Sources */,
 				AFE471A2247585CD007E5D22 /* GeomUtils.cpp in Sources */,
+				AF4C06C324798E2A004AF247 /* Serializer.cpp in Sources */,
 				AFE471A1247585CD007E5D22 /* Game.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

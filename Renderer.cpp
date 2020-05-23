@@ -16,27 +16,18 @@ constexpr uint8_t Renderer::ditherPattern8bit[];
 Renderer::Renderer(uint8_t* pPixelBuf,
                    uint32_t screenWidth,
                    uint32_t screenHeight,
-                   const Camera& camera,
-                   const Line worldBounds[],
-                   size_t numWorldBounds):
+                   ColRenderedCbType colRenderedCb,
+                   const Camera& camera):
     pPixelBuf{pPixelBuf},
     screenWidth{screenWidth},
     screenHeight{screenHeight},
-    camera{camera},
-    worldBounds{worldBounds},
-    numWorldBounds{numWorldBounds}
-    //pDrawnBuffer{new bool[screenWidth]}
+    colRenderedCb{colRenderedCb},
+    camera{camera}
 {
-}
-
-Renderer::~Renderer()
-{
-    //delete pDrawnBuffer;
 }
 
 void Renderer::BeginRender()
 {
-    //memset(pDrawnBuffer, 0, screenWidth * sizeof(bool));
 }
 
 void Renderer::EndRender()
@@ -58,9 +49,7 @@ void Renderer::RenderColumn(uint32_t screenX, double height)
     
     // figure out where in the pixel buffer to start, and only do
     // additions from there (avoid multiplication in the drawing loop)
-    // figure out where in the pixel buffer to start, and only do
-    // additions from there (avoid multiplication in the drawing loop)
-    uint32_t pixelBufferOffset = screenX;
+    size_t pixelBufferOffset = 0;
     
     // draw a vertical line all the way through the column
     
@@ -74,32 +63,29 @@ void Renderer::RenderColumn(uint32_t screenX, double height)
     
     uint32_t pixel;
     uint8_t y = 0;
-    uint32_t screenHeightChunks = screenHeight/8;
-    for (uint32_t i = 0; i < screenHeightChunks; i++)
+    uint32_t screenHeightPages = screenHeight / 8;
+    for (uint32_t pageNum = 0; pageNum < screenHeightPages; pageNum++)
     {
-        uint8_t chunk = 0;
-        for (uint32_t j = 0; j < 8; j++)
+        uint8_t pageData = 0;
+        for (uint32_t i = 0; i < 8; i++)
         {
             if (y >= y1 && y < y2)
                 pixel = 1;
             else
                 pixel = 0;
             
-            chunk |= (pixel << j);
+            pageData |= (pixel << i);
             
             y++;
         }
         
-        chunk &= ditherPatternFinal;
-        pPixelBuf[pixelBufferOffset] = chunk;
+        pageData &= ditherPatternFinal;
+        pPixelBuf[pixelBufferOffset] = pageData;
         
-        pixelBufferOffset += screenWidth;
-        
-        // see Adafruit_SSD1306<WIDTH, HEIGHT>::display()
-        // this class has its own 1KB display buffer
-        // if we want to optimize things and not use that, then
-        // it appears we could push out columns one at a time to the display itself
+        pixelBufferOffset++;
     }
+    
+    colRenderedCb();
 }
 
 // maps a range of [0.0, 1.0] to [0, rangeHigh]

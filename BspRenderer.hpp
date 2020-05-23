@@ -1,6 +1,6 @@
 //
 //  BspRenderer.hpp
-//  walls3d
+//  walls3duino
 //
 //  Created by Brian Dolan on 5/15/20.
 //  Copyright © 2020 Brian Dolan. All rights reserved.
@@ -18,12 +18,11 @@ public:
     BspRenderer(uint8_t* pPixelBuf,
                 uint32_t screenWidth,
                 uint32_t screenHeight,
-                const Camera& camera,
-                const Line worldBounds[],
-                size_t numWorldBounds);
-    ~BspRenderer() = default;
+                ColRenderedCbType colRenderedCb,
+                const Camera& camera);
+    ~BspRenderer();
 
-    void ProcessWalls(const Wall walls[], size_t numWalls);
+    void LoadBin(const uint8_t* bytes);
     
     void RenderScene() override;
     
@@ -39,7 +38,11 @@ private:
     BspTree bspTree;
     int32_t cameraNodeIndex;
 
-    BspRenderer* bspRenderer;
+    // a buffer of wall heights, per screen column, to be drawn
+    // used for adapting rendering of walls in random-ish order into a left-to-right sequence
+    // for pushing out to the display
+    // (a value of 0 means either there is no wall intersection there, or it just hasn't been rendered yet)
+    uint8_t* pHeightBuffer;
 };
 
 #endif /* BspRenderer_hpp */

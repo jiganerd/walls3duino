@@ -21,8 +21,8 @@ Camera::Camera(const Vec2& location):
     // compute angles of extremities of viewable area
     // angles are defined as positive going to the right of the camera direction,
     // and negative going to the left
-    //rightmostVisibleAngle = atan((viewPlaneWidth / 2.0f) / viewPlaneDist);
-    //leftmostVisibleAngle = -rightmostVisibleAngle;
+    rightmostVisibleAngle = atan((viewPlaneWidth / 2.0f) / viewPlaneDist);
+    leftmostVisibleAngle = -rightmostVisibleAngle;
     
     UpdateViewPlaneVectors();
 }
@@ -67,6 +67,6 @@ void Camera::UpdateNormalizedVectors()
 void Camera::UpdateViewPlaneVectors()
 {
     viewPlaneMiddle = location + dir;
-    //leftmostViewPlaneEnd = viewPlaneMiddle - halfViewPlane;
-    //rightmostViewPlaneEnd = viewPlaneMiddle + halfViewPlane;
+    leftmostViewPlaneEnd = viewPlaneMiddle - halfViewPlane;
+    rightmostViewPlaneEnd = viewPlaneMiddle + halfViewPlane;
 }

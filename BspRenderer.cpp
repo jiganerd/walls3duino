@@ -1,54 +1,48 @@
 //
 //  BspRenderer.cpp
-//  walls3d
+//  walls3duino
 //
 //  Created by Brian Dolan on 5/15/20.
 //  Copyright © 2020 Brian Dolan. All rights reserved.
 //
 
+#include <string.h>
 #include "BspRenderer.hpp"
 #include "GeomUtils.hpp"
 
 BspRenderer::BspRenderer(uint8_t* pPixelBuf,
                          uint32_t screenWidth,
                          uint32_t screenHeight,
-                         const Camera& camera,
-                         const Line worldBounds[],
-                         size_t numWorldBounds):
-    Renderer(pPixelBuf, screenWidth, screenHeight, camera, worldBounds, numWorldBounds),
-    cameraNodeIndex{-1}
+                         ColRenderedCbType colRenderedCb,
+                         const Camera& camera):
+    Renderer(pPixelBuf, screenWidth, screenHeight, colRenderedCb, camera),
+    cameraNodeIndex{-1},
+    pHeightBuffer{new uint8_t[screenWidth]}
 {
 }
 
-void BspRenderer::ProcessWalls(const Wall walls[], size_t numWalls)
+BspRenderer::~BspRenderer()
 {
-    Vector<Wall> walls2;
-    for (size_t i = 0; i < numWalls; i++)
-        walls2.PushBack(walls[i]);
-    
-    Vector<Line> worldBounds2;
-    for (size_t i = 0; i < numWorldBounds; i++)
-        worldBounds2.PushBack(worldBounds[i]);
-    
-    bspTree.ProcessWalls(walls2, worldBounds2);
-    
+    delete[] pHeightBuffer;
+}
+
+void BspRenderer::LoadBin(const uint8_t* bytes)
+{
+    bspTree.LoadBin(bytes);
     cameraNodeIndex = bspTree.Find(camera.location);
 }
 
 void BspRenderer::RenderScene()
 {
     BeginRender();
-    
+    memset(pHeightBuffer, 0, screenWidth * sizeof(uint8_t));
     bspTree.TraverseRender(camera.location, RenderWallStatic, this);
-    
+    for (uint32_t x = 0; x < screenWidth; x++)
+      RenderColumn(x, static_cast<double>(pHeightBuffer[x]));// TODO: resolve double vs. uint8_t
     EndRender();
     
     // technically this is not "rendering", but... sue me
-    int32_t newCameraNodeIndex {bspTree.Find(camera.location)};
-    if (newCameraNodeIndex != cameraNodeIndex)
-    {
-        cameraNodeIndex = newCameraNodeIndex;
-    }
+    cameraNodeIndex = bspTree.Find(camera.location);
 }
 
 void BspRenderer::RenderWallStatic(const Wall& wall, const BspTree::BspNodeDebugInfo& debugInfo, void* bspRenderer)
@@ -86,12 +80,9 @@ void BspRenderer::RenderWall(const Wall &wall, const BspTree::BspNodeDebugInfo& 
             
             for (uint32_t screenX = screenXP1; screenX <= screenXP2; screenX++)
             {
-                //if (!pDrawnBuffer[screenX])
-                //{
-                    RenderColumn(screenX, columnHeight);
-                //    pDrawnBuffer[screenX] = true;
-                //}
-                
+                if (pHeightBuffer[screenX] == 0)
+                    pHeightBuffer[screenX] = static_cast<uint8_t>(columnHeight); // TODO: resolve double vs. uint8_t
+
                 columnHeight += columnHeightIncrement;
             }
         }

@@ -19,13 +19,14 @@
 class Renderer
 {
 public:
+    typedef void (*ColRenderedCbType)();
+
     Renderer(uint8_t* pPixelBuf,
              uint32_t screenWidth,
              uint32_t screenHeight,
-             const Camera& camera,
-             const Line worldBounds[],
-             size_t numWorldBounds);
-    ~Renderer();
+             ColRenderedCbType colRenderedCb,
+             const Camera& camera);
+    ~Renderer() = default;
     
     virtual void RenderScene() = 0;
 
@@ -42,17 +43,12 @@ protected:
     
     uint8_t* pPixelBuf;
     const Camera& camera;
-    const Line* worldBounds;
-    size_t numWorldBounds;
     
     const uint32_t screenWidth;
     const uint32_t screenHeight;
-    
-    // this is a simplification of a "z buffer" - currently, we don't care about
-    // z-depth per column - we only care about whether or not a column was drawn
-    // TODO: make smaller and move to bsp clas
-    //bool* pDrawnBuffer;
 
+    ColRenderedCbType colRenderedCb;
+    
     // dither pattern - see spreadsheet
     static constexpr uint8_t ditherPattern8bit[] = { /*0x00,*/ 0x80, 0x88, 0x92, 0xAA, 0xD5, 0xDB, 0xFB, 0xFF };
 };

@@ -55,9 +55,9 @@ public:
 
 	// (cached upfront during creation of camera so this doesn't have to be
 	// computed over and over in BSP rendering algorithm)
-	//double leftmostVisibleAngle, rightmostVisibleAngle;
+	double leftmostVisibleAngle, rightmostVisibleAngle;
     Vec2 viewPlaneMiddle;
-    //Vec2 leftmostViewPlaneEnd, rightmostViewPlaneEnd;
+    Vec2 leftmostViewPlaneEnd, rightmostViewPlaneEnd;
 
 private:
     void UpdateNormalizedVectors();

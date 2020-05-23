@@ -1,6 +1,6 @@
 //
 //  BspTree.hpp
-//  walls3d
+//  walls3duino
 //
 //  Created by Brian Dolan on 5/9/20.
 //  Copyright © 2020 Brian Dolan. All rights reserved.
@@ -13,7 +13,6 @@
 #define BspTree_hpp
 
 #include <stdint.h>
-#include "Vector.hpp"
 #include "Vec2.hpp"
 #include "Wall.hpp"
 
@@ -34,8 +33,7 @@ private:
     class BspNode
     {
     public:
-        BspNode(BspTree* pOwnerTree, const Wall& wall, const Vector<Wall>& surroundingWalls,
-                const Vector<Line>& sectionBounds, uint32_t index);
+        BspNode(BspTree* pOwnerTree, const uint8_t* bytes, size_t& offset, uint32_t index);
         ~BspNode();
         
         uint32_t GetIndex() { return debugInfo.nodeIndex; }
@@ -43,33 +41,34 @@ private:
         void TraverseRender(const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr);
         void TraverseDebug(TraversalCbType debugFunc, void* ptr);
 
-    private:
-        Wall wall;
-        BspNode* pBackNode {nullptr};
-        BspNode* pFrontNode {nullptr};
-        BspNodeDebugInfo debugInfo;
-        
+    public:
         BspTree* pOwnerTree;
+        Wall wall;
+        BspNodeDebugInfo debugInfo;
+        BspNode* pBackNode;
+        BspNode* pFrontNode;
     };
 
 public:
     BspTree();
     ~BspTree() = default;
 
-    void ProcessWalls(const Vector<Wall>& walls, const Vector<Line>& sectionBounds);
+    void LoadBin(const uint8_t* bytes);
 
     int32_t Find(const Vec2& p);
     void TraverseRender(const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr);
     void TraverseDebug(TraversalCbType debugFunc, void* ptr);
     
 private:
-    // for "compiling" tree
-    BspNode* CreateNode(const Vector<Wall>& walls, const Vector<Line>& sectionBounds);
-    static void SplitWalls(const Line& splitterLine, const Vector<Wall>& walls, Vector<Wall>& backWalls, Vector<Wall>& frontWalls);
-    static size_t FindBestSplitterWallIndex(const Vector<Wall>& walls);
+    BspNode* ParseNode(const uint8_t* bytes, size_t& offset);
     
     uint32_t numNodes;
     BspNode* pRootNode;
+        
+    // this value represents a "null node" in the serialized data, and is chosen to
+    // not conflict with any reasonable value for what is otherwise a fixed-point
+    // representation of an x coordinate in the case of a "real" node
+    static constexpr int32_t SerNullNode {static_cast<int32_t>(0x7FFFFFFF)};
 };
 
 #endif /* BspTree_hpp */
