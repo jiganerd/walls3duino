@@ -4,7 +4,7 @@
 #include "Game.hpp"
 
 // TODO:
-// stop BSP drawing when all columns have been filled?
+// max nodes checking / RAM checking / num nodes parsed from file
 // to be able to load bigger maps, switch to model of global vertices and connections
 //   instead of repeating vertices (very big refactor)
 // use lookup tables for trig. functions
@@ -65,8 +65,8 @@ void loop()
   pGame->ProcessFrame();
   display.endDisplay();
 
-  Serial.print(F("free RAM in loop: "));
-  Serial.println(freeRam());
+  //Serial.print(F("free RAM in loop: "));
+  //Serial.println(freeRam());
 
   updateFrameRate();
 }
@@ -109,11 +109,9 @@ void joypadRead(void)
   uint8_t strafeLeft = 0;
   uint8_t strafeRight = 0;
 
-  //double moveSpeed = frameTimeMs * 300;
-  //double rotSpeed = frameTimeMs * M_PI * 2;
-  double moveSpeed = 10.0f;
-  double rotSpeed = M_PI/16;
-  
+  double moveSpeed = 0.05f * frameTimeMs;
+  double rotSpeed = 0.0005f * M_PI * frameTimeMs;
+
   if (moveForward == true)
       pGame->MoveCamera(moveSpeed);
   

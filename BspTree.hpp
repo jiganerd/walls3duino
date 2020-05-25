@@ -21,7 +21,7 @@
 class BspTree
 {
 public:
-    typedef void (*TraversalCbType)(const Wall&, void* ptr);
+    typedef bool (*TraversalCbType)(const Wall&, void* ptr);
 
 private:
     // this node class is the most optimized in terms of RAM footprint
@@ -32,7 +32,7 @@ private:
         BspNode(const uint8_t* bytes, size_t& offset);
         ~BspNode() = default;
         
-        void TraverseRender(BspNode* nodes, const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr);
+        bool TraverseRender(BspNode* nodes, const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr);
 
         // while the original walls3d version of this class uses pointers here (like a typical
         // tree implementation would), we are instead using 1-byte indices, rather than 2-byte pointers

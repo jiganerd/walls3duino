@@ -27,8 +27,8 @@ public:
     void RenderScene() override;
     
 private:
-    static void RenderWallStatic(const Wall& wall, void* bspRenderer);
-    void RenderWall(const Wall& wall);
+    static bool RenderWallStatic(const Wall& wall, void* bspRenderer);
+    bool RenderWall(const Wall& wall);
     double GetPerpendicularDistanceFromCameraByAngle(const Vec2& point, double angleFromCamera);
     double GetAngleFromCamera(const Vec2& location);
     uint8_t GetScreenXFromAngle(double angle);

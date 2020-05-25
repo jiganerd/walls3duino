@@ -40,12 +40,12 @@ void BspRenderer::RenderScene()
     EndRender();
 }
 
-void BspRenderer::RenderWallStatic(const Wall& wall, void* bspRenderer)
+bool BspRenderer::RenderWallStatic(const Wall& wall, void* bspRenderer)
 {
-    static_cast<BspRenderer*>(bspRenderer)->RenderWall(wall);
+    return static_cast<BspRenderer*>(bspRenderer)->RenderWall(wall);
 }
 
-void BspRenderer::RenderWall(const Wall &wall)
+bool BspRenderer::RenderWall(const Wall &wall)
 {
     // but this doesn't mean that the wall is "in front of" the camera
     // as per the camera's view direction
@@ -84,6 +84,19 @@ void BspRenderer::RenderWall(const Wall &wall)
         // else the wall is in front of the camera, but entirely outside the field of view to the right
         // or the left
     }
+
+    // do not continue traversing/rendering the BSP tree if all columns
+    // have been filled - since traversal happens near to far (opposite
+    // of the painter's algorithm), this is a safe/correct optimization
+    bool cont {false};
+    for (uint8_t x = 0; x < screenWidth; x++)
+        if (pHeightBuffer[x] == 0)
+        {
+            cont = true;
+            break;
+        }
+        
+    return cont;
 }
 
 // (angleFromCamera could be figured out, but it is passed in for efficiency, as it has already been calculated)

@@ -25,17 +25,21 @@ BspTree::BspNode::BspNode(const uint8_t* bytes, size_t& offset):
 
 // this renders *front to back* (closest walls first), and also performs backface culling
 // (walls facing away from the camera are not rendered)
-void BspTree::BspNode::TraverseRender(BspNode* nodes, const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr)
+bool BspTree::BspNode::TraverseRender(BspNode* nodes, const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr)
 {
+    bool cont {true};
+    
     // if the camera is in front of this node's wall
     if (GeomUtils::GeomUtils::IsPointInFrontOfLine(wall.seg, cameraLoc))
     {
         // render the nodes in front of this one, then this one, then the ones behind
         // (front to back)
-        
-        if (frontNodeIdx != NullNodeIdx) nodes[frontNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
-        renderFunc(wall, ptr);
-        if (backNodeIdx != NullNodeIdx) nodes[backNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
+        if (cont)
+           if (frontNodeIdx != NullNodeIdx) cont = nodes[frontNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
+        if (cont)
+            cont = renderFunc(wall, ptr);
+        if (cont)
+           if (backNodeIdx != NullNodeIdx) cont = nodes[backNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
     }
     // ... or in back
     else
@@ -45,13 +49,17 @@ void BspTree::BspNode::TraverseRender(BspNode* nodes, const Vec2& cameraLoc, Tra
         // since this wall is facing away from the camera, we render the ones in back of it
         // (closer to the camera) before the ones in front of it (farther from the camera)
 
-        if (backNodeIdx != NullNodeIdx) nodes[backNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
-        if (frontNodeIdx != NullNodeIdx) nodes[frontNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
+        if (cont)
+            if (backNodeIdx != NullNodeIdx) cont = nodes[backNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
+        if (cont)
+            if (frontNodeIdx != NullNodeIdx) cont = nodes[frontNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
     }
     
     // TODO: handle if camera is exactly on this node's line
     // wikipedia: If that polygon lies in the plane containing P, add it to the *list of polygons* at node N.
     // (I currenly don't have this set up as a list...)
+
+    return cont;
 }
 
 BspTree::BspTree():
@@ -149,4 +157,3 @@ void BspTree::PopAndIncParent(NodeStack& ns)
     if (ns.Count() > 0)
         ns.Peek().numChildrenProcessed++;
 }
-
