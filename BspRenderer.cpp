@@ -11,12 +11,11 @@
 #include "GeomUtils.hpp"
 
 BspRenderer::BspRenderer(uint8_t* pPixelBuf,
-                         uint32_t screenWidth,
-                         uint32_t screenHeight,
+                         uint8_t screenWidth,
+                         uint8_t screenHeight,
                          ColRenderedCbType colRenderedCb,
                          const Camera& camera):
     Renderer(pPixelBuf, screenWidth, screenHeight, colRenderedCb, camera),
-    cameraNodeIndex{-1},
     pHeightBuffer{new uint8_t[screenWidth]}
 {
 }
@@ -29,7 +28,6 @@ BspRenderer::~BspRenderer()
 void BspRenderer::LoadBin(const uint8_t* bytes)
 {
     bspTree.LoadBin(bytes);
-    cameraNodeIndex = bspTree.Find(camera.location);
 }
 
 void BspRenderer::RenderScene()
@@ -37,20 +35,17 @@ void BspRenderer::RenderScene()
     BeginRender();
     memset(pHeightBuffer, 0, screenWidth * sizeof(uint8_t));
     bspTree.TraverseRender(camera.location, RenderWallStatic, this);
-    for (uint32_t x = 0; x < screenWidth; x++)
-      RenderColumn(x, pHeightBuffer[x]);
+    for (uint8_t x = 0; x < screenWidth; x++)
+        RenderColumn(x, pHeightBuffer[x]);
     EndRender();
-    
-    // technically this is not "rendering", but... sue me
-    cameraNodeIndex = bspTree.Find(camera.location);
 }
 
-void BspRenderer::RenderWallStatic(const Wall& wall, const BspTree::BspNodeDebugInfo& debugInfo, void* bspRenderer)
+void BspRenderer::RenderWallStatic(const Wall& wall, void* bspRenderer)
 {
-    static_cast<BspRenderer*>(bspRenderer)->RenderWall(wall, debugInfo);
+    static_cast<BspRenderer*>(bspRenderer)->RenderWall(wall);
 }
 
-void BspRenderer::RenderWall(const Wall &wall, const BspTree::BspNodeDebugInfo& debugInfo)
+void BspRenderer::RenderWall(const Wall &wall)
 {
     // but this doesn't mean that the wall is "in front of" the camera
     // as per the camera's view direction
@@ -61,7 +56,7 @@ void BspRenderer::RenderWall(const Wall &wall, const BspTree::BspNodeDebugInfo& 
         // of the p1 vertex in screen coordinates!
         
         bool p1IsOnScreen {false}, p2IsOnScreen {false};
-        uint32_t screenXP1, screenXP2;
+        uint8_t screenXP1, screenXP2;
         double distP1, distP2;
         
         // get properties for screen x and distance for each vertex, with clipping
@@ -75,10 +70,10 @@ void BspRenderer::RenderWall(const Wall &wall, const BspTree::BspNodeDebugInfo& 
             double columnHeightP2 {GetColumnHeightByDistance(distP2)};
             
             double columnHeight {columnHeightP1};
-            uint32_t screenXDifference {screenXP2 - screenXP1};
+            uint8_t screenXDifference {static_cast<uint8_t>(screenXP2 - screenXP1)};
             double columnHeightIncrement {(columnHeightP2 - columnHeightP1) / static_cast<double>(screenXDifference)};
             
-            for (uint32_t screenX = screenXP1; screenX <= screenXP2; screenX++)
+            for (uint8_t screenX = screenXP1; screenX <= screenXP2; screenX++)
             {
                 if (pHeightBuffer[screenX] == 0)
                     pHeightBuffer[screenX] = GetClippedHeight(columnHeight);
@@ -108,12 +103,12 @@ double BspRenderer::GetAngleFromCamera(const Vec2& location)
     return (camera.dirN.cross(diffVectN) > 0 ? absAngleFromCameraDir : -absAngleFromCameraDir);
 }
 
-uint32_t BspRenderer::GetScreenXFromAngle(double angle)
+uint8_t BspRenderer::GetScreenXFromAngle(double angle)
 {
     // (see notebook for the math)
     double opp {camera.viewPlaneDist * tan(angle)};
     double percentWidth {opp / (camera.viewPlaneWidth / 2.0f)};
-    uint32_t screenX {static_cast<uint32_t>(percentWidth * static_cast<double>(screenWidth/2)) + screenWidth/2};
+    uint8_t screenX {static_cast<uint8_t>(static_cast<uint8_t>(percentWidth * static_cast<double>(screenWidth/2)) + screenWidth/2)};
     
     return screenX;
 }
@@ -124,7 +119,7 @@ int32_t BspRenderer::UnsignedSub(uint32_t n1, uint32_t n2)
     return (static_cast<int32_t>(n1) - static_cast<int32_t>(n2));
 }
 
-bool BspRenderer::ClipAndGetAttributes(bool leftSide, const Line& wallSeg, uint32_t& screenX, double& dist)
+bool BspRenderer::ClipAndGetAttributes(bool leftSide, const Line& wallSeg, uint8_t& screenX, double& dist)
 {
     bool pIsOnScreen {false};
     Vec2 p {(leftSide ? wallSeg.p1 : wallSeg.p2)};

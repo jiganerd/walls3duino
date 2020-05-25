@@ -22,8 +22,8 @@ public:
     typedef void (*ColRenderedCbType)();
 
     Renderer(uint8_t* pPixelBuf,
-             uint32_t screenWidth,
-             uint32_t screenHeight,
+             uint8_t screenWidth,
+             uint8_t screenHeight,
              ColRenderedCbType colRenderedCb,
              const Camera& camera);
     ~Renderer() = default;
@@ -39,14 +39,14 @@ protected:
     // this follows triangle rasterization rules described at
     // https://docs.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-rasterizer-stage-rules
     //inline static int32_t Rast(double n) { return static_cast<int32_t>(ceil(n - 0.5f)); };
-    inline static int32_t Rast(double n) { return static_cast<int32_t>(n); };
+    inline static uint8_t Rast(double n) { return static_cast<uint8_t>(n); };
     uint8_t GetClippedHeight(double height);
     
     uint8_t* pPixelBuf;
     const Camera& camera;
     
-    const uint32_t screenWidth;
-    const uint32_t screenHeight;
+    const uint8_t screenWidth;
+    const uint8_t screenHeight;
 
     ColRenderedCbType colRenderedCb;
     

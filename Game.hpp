@@ -20,8 +20,8 @@ class Game
 {
 public:
     Game(uint8_t* pPixelBuf,
-         uint32_t screenWidth,
-         uint32_t screenHeight,
+         uint8_t screenWidth,
+         uint8_t screenHeight,
          Renderer::ColRenderedCbType colRenderedCb);
     void ProcessFrame();
     void ToggleRenderers();

@@ -4,8 +4,10 @@
 #include "Game.hpp"
 
 // TODO:
-// try bigger map and possibly use loop with stack instead of recursion when decoding if necessary
 // stop BSP drawing when all columns have been filled?
+// to be able to load bigger maps, switch to model of global vertices and connections
+//   instead of repeating vertices (very big refactor)
+// use lookup tables for trig. functions
 
 // NOTE: max framerate w/ fullscreen/full pixel buffer black/white memset() flashing test (w/ console output)
 // is just under 12 FPS
@@ -36,8 +38,8 @@ void setup()
   // allow time for developer to attach the serial monitor
   //delay(5000);
 
-  Serial.println("");
-  Serial.print("free RAM before display init: ");
+  Serial.println(F(""));
+  Serial.print(F("free RAM before display init: "));
   Serial.println(freeRam());
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -49,7 +51,7 @@ void setup()
 
   Serial.println(F("SSD1306 allocation success"));
 
-  Serial.print("free RAM after display init: ");
+  Serial.print(F("free RAM after display init: "));
   Serial.println(freeRam());
 
   pGame = new Game(display.getBuffer(), SCREEN_WIDTH, SCREEN_HEIGHT, onColRenderered);
@@ -63,7 +65,7 @@ void loop()
   pGame->ProcessFrame();
   display.endDisplay();
 
-  Serial.print("free RAM in loop: ");
+  Serial.print(F("free RAM in loop: "));
   Serial.println(freeRam());
 
   updateFrameRate();
@@ -146,6 +148,6 @@ void updateFrameRate()
   frameTimeMs = now - last;
   last = now;
 
-  Serial.print("Frame time (ms): ");
+  Serial.print(F("Frame time (ms): "));
   Serial.println(frameTimeMs);
 }

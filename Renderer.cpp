@@ -14,8 +14,8 @@
 constexpr uint8_t Renderer::ditherPattern8bit[];
 
 Renderer::Renderer(uint8_t* pPixelBuf,
-                   uint32_t screenWidth,
-                   uint32_t screenHeight,
+                   uint8_t screenWidth,
+                   uint8_t screenHeight,
                    ColRenderedCbType colRenderedCb,
                    const Camera& camera):
     pPixelBuf{pPixelBuf},
@@ -43,8 +43,8 @@ void Renderer::RenderColumn(uint32_t screenX, uint8_t height)
 {
     double y1Float {static_cast<double>(screenHeight / 2) - (height / 2)};
     
-    uint32_t y1 {static_cast<uint32_t>(Rast(y1Float))};
-    uint32_t y2 {static_cast<uint32_t>(Rast(y1Float + height))};
+    uint8_t y1 {static_cast<uint8_t>(Rast(y1Float))};
+    uint8_t y2 {static_cast<uint8_t>(Rast(y1Float + height))};
     
     // figure out where in the pixel buffer to start, and only do
     // additions from there (avoid multiplication in the drawing loop)
@@ -60,13 +60,13 @@ void Renderer::RenderColumn(uint32_t screenX, uint8_t height)
     uint8_t ditherPatternFinal = ditherPattern16 >> (ditherPatternOffset % 8);
     ditherPatternOffset += 5; // a weird odd/prime number here that doesn't easily match up with 8 makes for less pattern-y artifacts
     
-    uint32_t pixel;
+    uint8_t pixel;
     uint8_t y = 0;
-    uint32_t screenHeightPages = screenHeight / 8;
-    for (uint32_t pageNum = 0; pageNum < screenHeightPages; pageNum++)
+    uint8_t screenHeightPages = screenHeight / 8;
+    for (uint8_t pageNum = 0; pageNum < screenHeightPages; pageNum++)
     {
         uint8_t pageData = 0;
-        for (uint32_t i = 0; i < 8; i++)
+        for (uint8_t i = 0; i < 8; i++)
         {
             if (y >= y1 && y < y2)
                 pixel = 1;

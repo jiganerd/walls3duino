@@ -12,14 +12,15 @@
 constexpr Wall Game::walls[];
 
 Game::Game(uint8_t* pPixelBuf,
-           uint32_t screenWidth,
-           uint32_t screenHeight,
+           uint8_t screenWidth,
+           uint8_t screenHeight,
            Renderer::ColRenderedCbType colRenderedCb):
     camera({60.0f, 15.0f}),
     bspr(pPixelBuf, screenWidth, screenHeight, colRenderedCb, camera)
     //rc(pPixelBuf, screenWidth, screenHeight, colRenderedCb, camera, walls, 9)
 {
-    bspr.LoadBin(bspTreeBin);
+    //bspr.LoadBin(basicAreaBspTree);
+    bspr.LoadBin(smileyFaceBspTree);
 }
 
 void Game::ProcessFrame()

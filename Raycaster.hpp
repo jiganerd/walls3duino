@@ -15,8 +15,8 @@ class Raycaster : public Renderer
 {
 public:
     Raycaster(uint8_t* pPixelBuf,
-              uint32_t screenWidth,
-              uint32_t screenHeight,
+              uint8_t screenWidth,
+              uint8_t screenHeight,
               ColRenderedCbType colRenderedCb,
               const Camera& camera,
               const Wall walls[],

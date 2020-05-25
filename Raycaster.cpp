@@ -12,8 +12,8 @@
 constexpr double Raycaster::infinity;
 
 Raycaster::Raycaster(uint8_t* pPixelBuf,
-                     uint32_t screenWidth,
-                     uint32_t screenHeight,
+                     uint8_t screenWidth,
+                     uint8_t screenHeight,
                      ColRenderedCbType colRenderedCb,
                      const Camera& camera,
                      const Wall walls[],
@@ -33,7 +33,7 @@ void Raycaster::RenderScene()
     const double percentWidthIncrement {2.0f / screenWidth};
     
     // loop through columns on the screen
-    for (uint32_t column {0}; column < screenWidth; column++)
+    for (uint8_t column {0}; column < screenWidth; column++)
     {
         // for this current column, figure out the corresponding point
         // on the view plane
