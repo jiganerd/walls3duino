@@ -150,6 +150,6 @@ void updateFrameRate()
   frameTimeMs = now - last;
   last = now;
 
-  Serial.print(F("Frame time (ms): "));
-  Serial.println(frameTimeMs);
+  //Serial.print(F("Frame time (ms): "));
+  //Serial.println(frameTimeMs);
 }

@@ -21,10 +21,13 @@
 class BspTree
 {
 public:
-    [[noreturn]] static void Error();
-    typedef bool (*TraversalCbType)(const Wall&, void* ptr);
+    using TraversalCbType = bool (*)(const Wall&, void* ptr);
 
 private:
+    using NodeIdx = uint8_t;
+    static constexpr NodeIdx NullNodeIdx {0xFF};
+    [[noreturn]] static void Error();
+
     // this node class is the most optimized in terms of RAM footprint
     // (as it has the most instantiations)
     class BspNode
@@ -39,10 +42,8 @@ private:
         // tree implementation would), we are instead using 1-byte indices, rather than 2-byte pointers
         // on the embedded hardware, in order to make this class as compact as possible
         // (requires that we have less than 255 nodes total)
-        uint8_t backNodeIdx;
-        uint8_t frontNodeIdx;
-
-        static constexpr uint8_t NullNodeIdx {0xFF};
+        NodeIdx backNodeIdx;
+        NodeIdx frontNodeIdx;
 
     private:
         Wall wall;
@@ -57,7 +58,7 @@ private:
     public:
         typedef struct
         {
-            uint8_t nodeIdx;
+            NodeIdx nodeIdx;
             uint8_t numChildrenProcessed; // 0, 1, or 2 (only)
         } NodeItem;
 
@@ -102,10 +103,10 @@ public:
     void TraverseRender(const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr);
     
 private:
-    uint8_t ParseNode(const uint8_t* bytes, size_t& offset);
+    NodeIdx ParseNode(const uint8_t* bytes, size_t& offset);
     
     // very-specially-purposed helper functions for otherwise-duplicated code in loading tree from file
-    void ParseAndPush(const uint8_t* bytes, size_t& offset, NodeStack& ns, uint8_t& nodeIdx);
+    void ParseAndPush(const uint8_t* bytes, size_t& offset, NodeStack& ns, NodeIdx& nodeIdx);
     void PopAndIncParent(NodeStack& ns);
     
     // all nodes are stored here as a contiguous array in heap memory (vs. the typical implementation of
@@ -114,7 +115,7 @@ private:
     // rather than one per node - each allocation was found to have an overhead of 2 bytes
     BspNode* nodes;
     uint8_t numNodes;
-    uint8_t rootNodeIdx; // should always be either 0 or BspNode::NullNodeIdx
+    NodeIdx rootNodeIdx; // should always be either 0 or BspNode::NullNodeIdx
     
     static constexpr size_t MaxNodes {50};
         

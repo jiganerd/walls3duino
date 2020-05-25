@@ -72,12 +72,12 @@ bool BspTree::BspNode::TraverseRender(BspNode* nodes, const Vec2& cameraLoc, Tra
 
 BspTree::BspTree():
     numNodes{0},
-    rootNodeIdx{BspNode::NullNodeIdx}
+    rootNodeIdx{NullNodeIdx}
 {
     static_assert((Serializer::Fixed::Unfixed(SerNullNode) > 10000.0f) || (Serializer::Fixed::Unfixed(SerNullNode) < -10000.0f),
                   "aliasing problem with SerNullNode and a node's (double) coordinate");
 
-    static_assert((BspNode::NullNodeIdx > MaxNodes), "NullNodeIdx is not unique");
+    static_assert((NullNodeIdx > MaxNodes), "NullNodeIdx is not unique");
 
     nodes = static_cast<BspNode*>(malloc(sizeof(BspNode) * MaxNodes));
     if (!nodes)
@@ -109,7 +109,7 @@ void BspTree::LoadBin(const uint8_t* bytes)
         {
             NodeStack::NodeItem& ni = ns.Peek();
 
-            if (ni.nodeIdx != BspNode::NullNodeIdx)
+            if (ni.nodeIdx != NullNodeIdx)
             {
                 if (ni.numChildrenProcessed == 0)
                     ParseAndPush(bytes, offset, ns, nodes[ni.nodeIdx].backNodeIdx);
@@ -132,13 +132,13 @@ void BspTree::LoadBin(const uint8_t* bytes)
 
 void BspTree::TraverseRender(const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr)
 {
-    if (rootNodeIdx != BspNode::NullNodeIdx)
+    if (rootNodeIdx != NullNodeIdx)
         nodes[rootNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
 }
 
-uint8_t BspTree::ParseNode(const uint8_t* bytes, size_t& offset)
+BspTree::NodeIdx BspTree::ParseNode(const uint8_t* bytes, size_t& offset)
 {
-    uint8_t nodeIdx {BspNode::NullNodeIdx};
+    NodeIdx nodeIdx {NullNodeIdx};
     
     // "peek" at the data to see whether or not there is a node there
     int32_t identifier {Serializer::PeekInt(bytes, offset)};
@@ -157,7 +157,7 @@ uint8_t BspTree::ParseNode(const uint8_t* bytes, size_t& offset)
     return nodeIdx;
 }
 
-void BspTree::ParseAndPush(const uint8_t *bytes, size_t &offset, BspTree::NodeStack &ns, uint8_t& nodeIdx)
+void BspTree::ParseAndPush(const uint8_t *bytes, size_t &offset, BspTree::NodeStack &ns, NodeIdx& nodeIdx)
 {
     nodeIdx = ParseNode(bytes, offset);
     ns.Push({nodeIdx, 0});
