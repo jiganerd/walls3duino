@@ -16,6 +16,14 @@
 #include "GeomUtils.hpp"
 #include "Serializer.hpp"
 
+// a generic error handling function for this module
+// this could be enhanced in the future if useful, but must be done in a cross-platform way
+// (cerr/cout and throw not supported on embedded platform)
+[[noreturn]] void BspTree::Error()
+{
+    while (1) {}
+}
+
 BspTree::BspNode::BspNode(const uint8_t* bytes, size_t& offset):
     wall{Line(bytes, offset)},
     backNodeIdx{NullNodeIdx},
@@ -69,7 +77,11 @@ BspTree::BspTree():
     static_assert((Serializer::Fixed::Unfixed(SerNullNode) > 10000.0f) || (Serializer::Fixed::Unfixed(SerNullNode) < -10000.0f),
                   "aliasing problem with SerNullNode and a node's (double) coordinate");
 
+    static_assert((BspNode::NullNodeIdx > MaxNodes), "NullNodeIdx is not unique");
+
     nodes = static_cast<BspNode*>(malloc(sizeof(BspNode) * MaxNodes));
+    if (!nodes)
+        BspTree::Error();
 }
 
 BspTree::~BspTree()

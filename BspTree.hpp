@@ -21,6 +21,7 @@
 class BspTree
 {
 public:
+    [[noreturn]] static void Error();
     typedef bool (*TraversalCbType)(const Wall&, void* ptr);
 
 private:
@@ -66,16 +67,23 @@ private:
         size_t Count() { return count; }
         void Push(NodeItem&& ni)
         {
-            data[count] = ni;
-            if (++count > MaxDepth)
-                while (1) {} // cannot "throw" on embedded platform
+            if (count >= MaxDepth)
+                BspTree::Error();
+
+            data[count++] = ni;
         }
         NodeItem& Peek()
         {
+            if (count == 0)
+                BspTree::Error();
+                
             return data[count - 1];
         }
         void Pop()
         {
+            if (count == 0)
+                BspTree::Error();
+                
             count--;
         }
         
