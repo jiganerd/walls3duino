@@ -1,6 +1,6 @@
 //
 //  Graphics.hpp
-//  walls3d
+//  walls3duino
 //
 //  Created by Brian Dolan on 4/24/20.
 //  Copyright © 2020 Brian Dolan. All rights reserved.
@@ -12,7 +12,8 @@
 #include <string>
 #include <cmath>
 #include <cstdint>
-#include <SDL2/SDL.h>
+#include <memory>
+#include "SDLHeader.hpp"
 #include "Vec2.hpp"
 
 // this class simulates an SSD1306 128x64 black/white OLED display, and somewhat the
