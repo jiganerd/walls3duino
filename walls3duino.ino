@@ -3,16 +3,6 @@
 #include "Adafruit_SSD1306_mod.h"
 #include "Game.hpp"
 
-// TODO:
-// to be able to load bigger maps, switch to model of global vertices and connections
-//   instead of repeating vertices (very big refactor)
-// use lookup tables for trig. functions
-// could attempt enabling larger maps by keeping BSP tree in flash instead of RAM, in the same format as is currently in RAM, 
-//   if flash reading speed would allow for it
-// could attempt to use a "compressed" array with each item representing a "from x to x" segment that has been drawn,
-//   instead of flat "height buffer, for checking if the entire screen has been drawn or not (similar to Doom engine), in
-//   case it speeds up checking of whether or not the entire screen has been drawn
-
 // NOTE: max framerate w/ fullscreen/full pixel buffer black/white memset() flashing test (w/ console output)
 // is just under 12 FPS
 
