@@ -24,7 +24,6 @@ public:
          uint8_t screenHeight,
          Renderer::ColRenderedCbType colRenderedCb);
     void ProcessFrame();
-    void ToggleRenderers();
     void RotateCamera(double angleRad);
     void MoveCamera(double distance);
     void StrafeCamera(double distanceToRight);

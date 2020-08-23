@@ -16,11 +16,9 @@ Game::Game(uint8_t* pPixelBuf,
            uint8_t screenHeight,
            Renderer::ColRenderedCbType colRenderedCb):
     camera({60.0f, 15.0f}),
-    bspr(pPixelBuf, screenWidth, screenHeight, colRenderedCb, camera)
+    bspr(pPixelBuf, screenWidth, screenHeight, colRenderedCb, camera, smileyFaceBspTree)
     //rc(pPixelBuf, screenWidth, screenHeight, colRenderedCb, camera, walls, 9)
 {
-    //bspr.LoadBin(basicAreaBspTree);
-    bspr.LoadBin(smileyFaceBspTree);
 }
 
 void Game::ProcessFrame()

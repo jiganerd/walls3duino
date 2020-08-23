@@ -14,8 +14,10 @@ BspRenderer::BspRenderer(uint8_t* pPixelBuf,
                          uint8_t screenWidth,
                          uint8_t screenHeight,
                          ColRenderedCbType colRenderedCb,
-                         const Camera& camera):
+                         const Camera& camera,
+                         const uint8_t* pBspNodes):
     Renderer(pPixelBuf, screenWidth, screenHeight, colRenderedCb, camera),
+    bspTree(pBspNodes),
     pHeightBuffer{new uint8_t[screenWidth]}
 {
 }
@@ -23,11 +25,6 @@ BspRenderer::BspRenderer(uint8_t* pPixelBuf,
 BspRenderer::~BspRenderer()
 {
     delete[] pHeightBuffer;
-}
-
-void BspRenderer::LoadBin(const uint8_t* bytes)
-{
-    bspTree.LoadBin(bytes);
 }
 
 void BspRenderer::RenderScene()

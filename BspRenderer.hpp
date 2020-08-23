@@ -19,11 +19,10 @@ public:
                 uint8_t screenWidth,
                 uint8_t screenHeight,
                 ColRenderedCbType colRenderedCb,
-                const Camera& camera);
+                const Camera& camera,
+				const uint8_t* pBspNodes);
     ~BspRenderer();
-
-    void LoadBin(const uint8_t* bytes);
-    
+  
     void RenderScene() override;
     
 private:

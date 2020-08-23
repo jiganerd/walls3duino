@@ -25,147 +25,70 @@
 }
 
 BspTree::BspNode::BspNode(const uint8_t* bytes, size_t& offset):
-    wall{Line(bytes, offset)},
-    backNodeIdx{NullNodeIdx},
-    frontNodeIdx{NullNodeIdx}
+	    wall{Line(bytes, offset)},
+        backNodeIdx{static_cast<NodeIdx>(Serializer::DeSerInt(bytes, offset))},
+        frontNodeIdx{static_cast<NodeIdx>(Serializer::DeSerInt(bytes, offset))}
 {
 }
 
-// this renders *front to back* (closest walls first), and also performs backface culling
-// (walls facing away from the camera are not rendered)
-bool BspTree::BspNode::TraverseRender(BspNode* nodes, const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr)
+BspTree::BspTree(const uint8_t* bytes):
+	pNodes{bytes}
 {
-    bool cont {true};
-    
-    // if the camera is in front of this node's wall
-    if (GeomUtils::GeomUtils::IsPointInFrontOfLine(wall.seg, cameraLoc))
-    {
-        // render the nodes in front of this one, then this one, then the ones behind
-        // (front to back)
-        if (cont)
-           if (frontNodeIdx != NullNodeIdx) cont = nodes[frontNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
-        if (cont)
-            cont = renderFunc(wall, ptr);
-        if (cont)
-           if (backNodeIdx != NullNodeIdx) cont = nodes[backNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
-    }
-    // ... or in back
-    else
-    {
-        // don't render the current node's wall, since it is not facing the right direction,
-        // but do potentially render its children
-        // since this wall is facing away from the camera, we render the ones in back of it
-        // (closer to the camera) before the ones in front of it (farther from the camera)
-
-        if (cont)
-            if (backNodeIdx != NullNodeIdx) cont = nodes[backNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
-        if (cont)
-            if (frontNodeIdx != NullNodeIdx) cont = nodes[frontNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
-    }
-    
-    // TODO: handle if camera is exactly on this node's line
-    // wikipedia: If that polygon lies in the plane containing P, add it to the *list of polygons* at node N.
-    // (I currenly don't have this set up as a list...)
-
-    return cont;
-}
-
-BspTree::BspTree():
-    numNodes{0},
-    rootNodeIdx{NullNodeIdx}
-{
-    static_assert((Serializer::Fixed::Unfixed(SerNullNode) > 10000.0f) || (Serializer::Fixed::Unfixed(SerNullNode) < -10000.0f),
-                  "aliasing problem with SerNullNode and a node's (double) coordinate");
-
-    static_assert((NullNodeIdx > MaxNodes), "NullNodeIdx is not unique");
-
-    nodes = static_cast<BspNode*>(malloc(sizeof(BspNode) * MaxNodes));
-    if (!nodes)
-        BspTree::Error();
-}
-
-BspTree::~BspTree()
-{
-    delete nodes;
-}
-
-void BspTree::LoadBin(const uint8_t* bytes)
-{
-    // important note:
-    // in the original version of this function recursion was used such that each node,
-    // upon creation, would parse its own subtree
-    // because of memory limitations on the embedded hardware, this function now uses
-    // a loop with a stack, rather than recursion
-
-    size_t offset {0};
-    NodeStack ns;
-    bool done {false};
-
-    ParseAndPush(bytes, offset, ns, rootNodeIdx);
-    
-    while (!done)
-    {
-        if (ns.Count() > 0)
-        {
-            NodeStack::NodeItem& ni = ns.Peek();
-
-            if (ni.nodeIdx != NullNodeIdx)
-            {
-                if (ni.numChildrenProcessed == 0)
-                    ParseAndPush(bytes, offset, ns, nodes[ni.nodeIdx].backNodeIdx);
-                else if (ni.numChildrenProcessed == 1)
-                    ParseAndPush(bytes, offset, ns, nodes[ni.nodeIdx].frontNodeIdx);
-                else if (ni.numChildrenProcessed == 2)
-                    PopAndIncParent(ns);
-            }
-            else
-            {
-                PopAndIncParent(ns);
-            }
-        }
-        else
-        {
-            done = true;
-        }
-    }
 }
 
 void BspTree::TraverseRender(const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr)
 {
-    if (rootNodeIdx != NullNodeIdx)
-        nodes[rootNodeIdx].TraverseRender(nodes, cameraLoc, renderFunc, ptr);
+	TraverseRenderNode(0, cameraLoc, renderFunc, ptr);
 }
 
-BspTree::NodeIdx BspTree::ParseNode(const uint8_t* bytes, size_t& offset)
+// this renders *front to back* (closest walls first), and also performs backface culling
+// (walls facing away from the camera are not rendered)
+bool BspTree::TraverseRenderNode(NodeIdx nodeIdx, const Vec2& cameraLoc, TraversalCbType renderFunc, void* ptr)
 {
-    NodeIdx nodeIdx {NullNodeIdx};
-    
-    // "peek" at the data to see whether or not there is a node there
-    int32_t identifier {Serializer::PeekInt(bytes, offset)};
-    if (identifier != SerNullNode)
-    {
-        new(&nodes[numNodes]) BspNode(bytes, offset);
+	bool cont {true};
 
-        nodeIdx = numNodes;
-        numNodes++;
-    }
-    else
-    {
-        offset += 4; // make the "peek" official
-    }
+	// 2 fixed-point x/y coordinates and 2 32-bit child indices
+	constexpr size_t sizeOfSerNode {sizeof(uint32_t) * 4 + sizeof(uint32_t) * 2};
 
-    return nodeIdx;
-}
+	if (nodeIdx != NullNodeIdx)
+	{
+		// deserialize the node out of flash into a class
+		size_t dummyOffset {0};
+		BspNode node(pNodes + sizeOfSerNode * static_cast<size_t>(nodeIdx), dummyOffset);
 
-void BspTree::ParseAndPush(const uint8_t *bytes, size_t &offset, BspTree::NodeStack &ns, NodeIdx& nodeIdx)
-{
-    nodeIdx = ParseNode(bytes, offset);
-    ns.Push({nodeIdx, 0});
-}
+		// if the camera is in front of this node's wall
+		if (GeomUtils::GeomUtils::IsPointInFrontOfLine(node.wall.seg, cameraLoc))
+		{
+			// render the nodes in front of this one, then this one, then the ones behind
+			// (front to back)
+			if (cont)
+				cont = TraverseRenderNode(node.frontNodeIdx, cameraLoc, renderFunc, ptr);
 
-void BspTree::PopAndIncParent(NodeStack& ns)
-{
-    ns.Pop();
-    if (ns.Count() > 0)
-        ns.Peek().numChildrenProcessed++;
+			if (cont)
+				cont = renderFunc(node.wall, ptr);
+
+			if (cont)
+				cont = TraverseRenderNode(node.backNodeIdx, cameraLoc, renderFunc, ptr);
+		}
+		// ... or in back
+		else
+		{
+			// don't render the current node's wall, since it is not facing the right direction,
+			// but do potentially render its children
+			// since this wall is facing away from the camera, we render the ones in back of it
+			// (closer to the camera) before the ones in front of it (farther from the camera)
+
+			if (cont)
+				cont = TraverseRenderNode(node.backNodeIdx, cameraLoc, renderFunc, ptr);
+
+			if (cont)
+				cont = TraverseRenderNode(node.frontNodeIdx, cameraLoc, renderFunc, ptr);
+		}
+
+		// TODO: handle if camera is exactly on this node's line
+		// wikipedia: If that polygon lies in the plane containing P, add it to the *list of polygons* at node N.
+		// (I currenly don't have this set up as a list...)
+	}
+
+	return cont;
 }

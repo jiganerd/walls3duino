@@ -16,6 +16,5 @@
 #endif
 
 extern const unsigned char smileyFaceBspTree[] PROGMEM;
-extern const unsigned char basicAreaBspTree[] PROGMEM;
 
 #endif /* BspTreeBin_hpp */
